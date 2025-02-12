@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
+from torch.utils.data import DataLoader
 import torch
 import numpy as np
 from models.wine_batchNorm import WineModel_BNorm
@@ -9,11 +9,33 @@ from models.wine_batchNorm import WineModel_BNorm
 import torch.nn as nn
 
 
-def trainTheM0del(doBN=True,model=WineModel_BNorm(),train_loader=[],test_loader=[],num_epochs=1000):
+def classification_accuracy(y_pred,y):
+    matches = torch.argmax(y_pred,axis=1) == y
+    matchesNum = matches.float() # convert matches to numeric values
+    accuracyPct = 100*torch.mean(matchesNum)
+    return accuracyPct
 
-    # loss function and optimizer
-    loss_function = nn.BCEWithLogitsLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=.01)
+
+
+
+def trainTheM0del(
+        doBN=False,
+        model=None,
+        train_loader=None,
+        test_loader=None,
+        num_epochs=1000,
+        loss_function=nn.BCEWithLogitsLoss(),
+        optimizer=None,
+        isClassification=False
+    ):
+    if model is None:
+        model = WineModel_BNorm()
+    if train_loader is None:
+        train_loader = DataLoader([])
+    if test_loader is None:
+        test_loader = DataLoader([])
+    if optimizer is None:
+        optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 
     # initialize losses
     losses = torch.zeros(num_epochs)
@@ -42,7 +64,11 @@ def trainTheM0del(doBN=True,model=WineModel_BNorm(),train_loader=[],test_loader=
             batch_loss.append(loss.item())
 
             # compute accuracy for this batch
-            batch_accuracy.append(100*torch.mean(((y_pred > .5) == y).float()).item())
+            if isClassification:
+                btchAcc = classification_accuracy(y_pred,y)
+                batch_accuracy.append(btchAcc)
+            else:
+                batch_accuracy.append(100*torch.mean(((y_pred > .5) == y).float()).item())    
         # end of batch loop
         # compute average accuracy and loss for this epoch
         train_accuracy.append(np.mean(batch_accuracy))
@@ -53,6 +79,10 @@ def trainTheM0del(doBN=True,model=WineModel_BNorm(),train_loader=[],test_loader=
         X,y = next(iter(test_loader)) # extract X,y from test dataloader
         with torch.no_grad(): # deactivates autograd
             y_pred = model(X,doBN)
-        test_accuracy.append(100*torch.mean(((y_pred > .5) == y).float()).item())
+        if isClassification:
+            tstAcc = classification_accuracy(y_pred,y)
+            test_accuracy.append(tstAcc)
+        else:
+            test_accuracy.append(100*torch.mean(((y_pred > .5) == y).float()).item())    
 
     return losses, train_accuracy, test_accuracy    
