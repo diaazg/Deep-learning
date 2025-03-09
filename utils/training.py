@@ -82,6 +82,7 @@ def trainTheM0del(
         if isClassification:
             tstAcc = classification_accuracy(y_pred,y)
             test_accuracy.append(tstAcc)
+            print(f'Epoch {epoch+1}/{num_epochs}, Train Loss: {losses[epoch]:.4f}, Train Acc: {train_accuracy[-1]:.2f}, Test Acc: {test_accuracy[-1]:.2f}')
         else:
             test_accuracy.append(100*torch.mean(((y_pred > .5) == y).float()).item())    
 
