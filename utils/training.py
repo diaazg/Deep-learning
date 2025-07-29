@@ -26,10 +26,12 @@ def trainTheM0del(
         num_epochs=1000,
         loss_function=nn.BCEWithLogitsLoss(),
         optimizer=None,
-        isClassification=False
+        isClassification=False,
+        device=torch.device("cpu") 
     ):
     if model is None:
         model = WineModel_BNorm()
+    model.to(device)    
     if train_loader is None:
         train_loader = DataLoader([])
     if test_loader is None:
@@ -52,6 +54,7 @@ def trainTheM0del(
         batch_accuracy = []
         batch_loss = []
         for X, y in train_loader:
+            X, y = X.to(device), y.to(device)
             # forward pass and loss
             y_pred = model(X,doBN)
             loss = loss_function(y_pred, y)
@@ -71,19 +74,29 @@ def trainTheM0del(
                 batch_accuracy.append(100*torch.mean(((y_pred > .5) == y).float()).item())    
         # end of batch loop
         # compute average accuracy and loss for this epoch
-        train_accuracy.append(np.mean(batch_accuracy))
-        losses[epoch] = np.mean(batch_loss)
+
+        # train_accuracy.append(np.mean(batch_accuracy)) 
+        """ This will cause problem in case of not using cpu 
+        you/’re trying to use .numpy() or NumPy functions (np.mean) directly on a tensor that’s still on the MPS device,
+        and that’s not allowed. NumPy only works with CPU tensors.
+        So we need to move tensors to cpu before converting to Numpy or using Numpy functions
+        """
+        train_accuracy.append(np.mean([acc.cpu().item() if torch.is_tensor(acc) else acc for acc in batch_accuracy]))
+        losses[epoch] = np.mean(batch_loss)  # already Python floats, so this is fine
 
         # test accuracy
         model.eval()
         X,y = next(iter(test_loader)) # extract X,y from test dataloader
+        X, y = X.to(device), y.to(device)
         with torch.no_grad(): # deactivates autograd
             y_pred = model(X,doBN)
         if isClassification:
             tstAcc = classification_accuracy(y_pred,y)
+            tstAcc = tstAcc.cpu().item() if torch.is_tensor(tstAcc) else tstAcc
             test_accuracy.append(tstAcc)
             print(f'Epoch {epoch+1}/{num_epochs}, Train Loss: {losses[epoch]:.4f}, Train Acc: {train_accuracy[-1]:.2f}, Test Acc: {test_accuracy[-1]:.2f}')
         else:
-            test_accuracy.append(100*torch.mean(((y_pred > .5) == y).float()).item())    
+            acc = 100 * torch.mean(((y_pred > .5) == y).float()).item()
+            test_accuracy.append(acc)   
 
     return losses, train_accuracy, test_accuracy    
