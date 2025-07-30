@@ -27,7 +27,8 @@ def trainTheM0del(
         loss_function=nn.BCEWithLogitsLoss(),
         optimizer=None,
         isClassification=False,
-        device=torch.device("cpu") 
+        device=torch.device("cpu") ,
+        
     ):
     if model is None:
         model = WineModel_BNorm()
@@ -58,7 +59,7 @@ def trainTheM0del(
             # forward pass and loss
             """  y_pred = model(X,doBN) """
             y_pred = model(X)
-            loss = loss_function(y_pred, y)
+            loss = loss_function(y_pred, y)    
             # backprop
             optimizer.zero_grad()
             loss.backward()
@@ -98,6 +99,7 @@ def trainTheM0del(
             test_accuracy.append(tstAcc)
             print(f'Epoch {epoch+1}/{num_epochs}, Train Loss: {losses[epoch]:.4f}, Train Acc: {train_accuracy[-1]:.2f}, Test Acc: {test_accuracy[-1]:.2f}')
         else:
+           
             acc = 100 * torch.mean(((y_pred > .5) == y).float()).item()
             test_accuracy.append(acc)   
 
