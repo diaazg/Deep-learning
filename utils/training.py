@@ -56,7 +56,8 @@ def trainTheM0del(
         for X, y in train_loader:
             X, y = X.to(device), y.to(device)
             # forward pass and loss
-            y_pred = model(X,doBN)
+            """  y_pred = model(X,doBN) """
+            y_pred = model(X)
             loss = loss_function(y_pred, y)
             # backprop
             optimizer.zero_grad()
@@ -89,7 +90,8 @@ def trainTheM0del(
         X,y = next(iter(test_loader)) # extract X,y from test dataloader
         X, y = X.to(device), y.to(device)
         with torch.no_grad(): # deactivates autograd
-            y_pred = model(X,doBN)
+           """  y_pred = model(X,doBN) """
+           y_pred = model(X)
         if isClassification:
             tstAcc = classification_accuracy(y_pred,y)
             tstAcc = tstAcc.cpu().item() if torch.is_tensor(tstAcc) else tstAcc
