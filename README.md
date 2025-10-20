@@ -37,11 +37,11 @@ Deep-learning/
 
 Through this repository, my main objectives were to:
 
-- Understand how neural networks are built and trained.
-- Learn how to tune hyperparameters and optimize models.
-- Experiment with architectures like CNNs, RNNs, GANs.
-- Apply Transfer Learning to improve performance.
-- Visualize training progress and interpret model results.
+- **Master PyTorch** by building and training models from scratch  
+- Understand the **core theory and intuition** behind neural networks  
+- Gain hands-on experience with **different architectures** (CNNs, RNNs, Transformers)  
+- Learn how to **debug, tune, and visualize** training progress  
+- Apply **transfer learning** and model optimization in practice  
 
 ---
 
