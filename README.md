@@ -13,13 +13,14 @@ It includes experiments with different architectures, frameworks, and datasets �
 ---
 
 ## 🧩 Contents
-
-Deep-learning/
-│
-├── 📂 models/         # Custom-built model architectures
-├── 📂 notebooks/      # Jupyter notebooks covering deep learning topics
-├── 📂 utils/          # Helper functions (data loaders, visualization, metrics)
-└── README.md
+```
+  Deep-learning/
+  │
+  ├── 📂 models/         # Custom-built model architectures
+  ├── 📂 notebooks/      # Jupyter notebooks covering deep learning topics
+  ├── 📂 utils/          # Helper functions (data loaders, visualization, metrics)
+  └── README.md
+```
 
 ---
 
