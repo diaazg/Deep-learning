@@ -1,7 +1,7 @@
 # 🧠 Deep Learning Journey
 
 Welcome to my **Deep Learning** repository!  
-This is a collection of notebooks, experiments, and mini-projects I created while learning and practicing **Deep Learning concepts** — from the fundamentals to more advanced topics like CNNs, RNNs,Transformers, and Transfer Learning.
+This is a collection of notebooks, experiments, and mini-projects I created while learning and practicing **Deep Learning concepts** — from the fundamentals to more advanced topics like CNNs ,GANs ,AE ,RNNs ,Transformers , and Transfer Learning.
 
 ---
 
